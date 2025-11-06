@@ -1,11 +1,15 @@
-import React from 'react'
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Registration from "./Registration";
+import AsosiyPanel from "./asosiypanel";
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <h1>mana</h1>
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Registration />} />
+        <Route path="/asosiypanel" element={<AsosiyPanel />} />
+      </Routes>
+    </Router>
+  );
 }
-
-export default App

@@ -1,0 +1,100 @@
+:root{
+  --pumpkin: #ff8c42; /* qovoq (pumpkin) rang */
+  --bg: #f6f6f8;
+  --card: #ffffff;
+  --muted: #666;
+  --accent: #5b5b5b;
+}
+
+/* Page center */
+.reg-page{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fffdf9 0%, var(--bg) 100%);
+  padding: 30px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* Card */
+.reg-card{
+  width: 360px;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(37,37,37,0.08);
+  padding: 22px;
+  border-top: 6px solid var(--pumpkin);
+}
+
+/* Title */
+.reg-title{
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  color: var(--accent);
+  text-align: center;
+}
+
+/* Labels and inputs */
+.reg-label{
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.reg-input{
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #e6e6e9;
+  background: #fafafa;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: box-shadow .15s, border-color .15s;
+}
+
+.reg-input:focus{
+  border-color: var(--pumpkin);
+  box-shadow: 0 4px 14px rgba(255,140,66,0.12);
+}
+
+/* Buttons row */
+.reg-buttons{
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* Buttons */
+.btn{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+}
+
+.btn.primary{
+  background: linear-gradient(180deg, var(--pumpkin), #ff7a1a);
+  color: white;
+  box-shadow: 0 6px 18px rgba(255,140,66,0.18);
+}
+
+.btn.secondary{
+  background: transparent;
+  border: 1px solid #d2d2d6;
+  color: var(--accent);
+}
+
+/* Message */
+.reg-message{
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--accent);
+}
