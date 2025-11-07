@@ -1,12 +1,12 @@
 :root{
-  --pumpkin: #ff8c42; /* qovoq (pumpkin) rang */
+  --pumpkin: #ff8c42; 
   --bg: #f6f6f8;
   --card: #ffffff;
   --muted: #666;
   --accent: #5b5b5b;
 }
 
-/* Page center */
+
 .reg-page{
   min-height: 100vh;
   display: flex;
@@ -17,7 +17,7 @@
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-/* Card */
+
 .reg-card{
   width: 360px;
   background: var(--card);
@@ -27,7 +27,7 @@
   border-top: 6px solid var(--pumpkin);
 }
 
-/* Title */
+
 .reg-title{
   margin: 0 0 16px 0;
   font-size: 20px;
@@ -35,7 +35,7 @@
   text-align: center;
 }
 
-/* Labels and inputs */
+
 .reg-label{
   display: block;
   font-size: 13px;
@@ -61,14 +61,14 @@
   box-shadow: 0 4px 14px rgba(255,140,66,0.12);
 }
 
-/* Buttons row */
+
 .reg-buttons{
   display: flex;
   gap: 10px;
   margin-top: 14px;
 }
 
-/* Buttons */
+
 .btn{
   flex: 1;
   padding: 10px 12px;
@@ -91,7 +91,7 @@
   color: var(--accent);
 }
 
-/* Message */
+
 .reg-message{
   margin-top: 12px;
   text-align: center;

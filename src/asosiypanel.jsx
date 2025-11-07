@@ -1,72 +1,70 @@
+import React from "react";
 
-    import React, { useState } from 'react';
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
-const { Header, Sider, Content } = Layout;
-const AsosiyPanel = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+export default function AsosiyPanel() {
+  const buttonStyle = {
+    display: "block",
+    width: "160px",
+    padding: "10px",
+    borderRadius: "8px",
+    border: "none",
+    backgroundColor: "white",
+    cursor: "pointer",
+    fontWeight: "bold",
+    textAlign: "center",
+    textDecoration: "none",
+    color: "black",
+    marginBottom: "10px",
+    transition: "0.2s",
+  };
+
+  const hover = (e) => (e.target.style.backgroundColor = "#ffd699");
+  const leave = (e) => (e.target.style.backgroundColor = "white");
+
   return (
-    <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}
-          items={[
-            {
-              key: '1',
-              icon: <UserOutlined />,
-              label: 'ishchilar',
-            },
-            {
-              key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'Kameralar',
-            },
-            {
-              key: '3',
-              icon: <UploadOutlined />,
-              label: 'Chiqim',
-            },
-          ]}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-            }}
-          />
-        </Header>
-        <Content
-          style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 720,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      
+      <div
+        style={{
+          width: "220px",
+          backgroundColor: "#ff8c00", 
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          paddingTop: "40px",
+        }}
+      >
+        <h2 style={{ color: "white", marginBottom: "40px" }}>Admin Panel</h2>
+
+        <a
+          href="/ishchilar"
+          style={buttonStyle}
+          onMouseEnter={hover}
+          onMouseLeave={leave}
         >
-          Content
-        </Content>
-      </Layout>
-    </Layout>
+          Ishchilar
+        </a>
+
+        <a
+          href="/kameralar"
+          style={buttonStyle}
+          onMouseEnter={hover}
+          onMouseLeave={leave}
+        >
+          Kameralar
+        </a>
+
+        <a
+          href="/mahsulotlar"
+          style={buttonStyle}
+          onMouseEnter={hover}
+          onMouseLeave={leave}
+        >
+          Mahsulotlar
+        </a>
+      </div>
+      <div style={{ flex: 1, padding: "30px" }}>
+        <h1>1Tiyn Market Admini</h1>
+      </div>
+    </div>
   );
-};
-export default AsosiyPanel;
+}

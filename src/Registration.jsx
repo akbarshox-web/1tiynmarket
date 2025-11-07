@@ -52,13 +52,8 @@ export default function Registration() {
           <button type="submit" className="btn primary">
             Registratsiya
           </button>
-          <button
-            type="button"
-            className="btn secondary"
-            onClick={() => alert("Bu tugma keyin ishlaydi")}
-          >
-            Ishlash uchun
-          </button>
+          <a href="/IshUchun" className="btn secondary" style={{textDecoration: "none"}}
+          >Ish uchun</a>
         </div>
 
         {message && <p className="reg-message">{message}</p>}
