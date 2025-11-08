@@ -43,7 +43,7 @@ export default function AsosiyPanel() {
         <h2
           style={{
             color: "white",
-            marginBottom: "40px",
+            marginBottom: "none",
             fontSize: "1.8rem",
             fontWeight: "700",
             textShadow: "0 2px 3px rgba(0,0,0,0.2)",
@@ -51,6 +51,11 @@ export default function AsosiyPanel() {
         >
           1Tiyn Admin
         </h2>
+        <img style={{
+            width: "500px",
+            margin: "none",
+            fontWeight: "400",
+        }} src="https://cbu.uz/upload/iblock/b96/1tiyin_1994_1.png" alt="" />
 
         <a href="/ishchilar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
           👥 Ishchilar
