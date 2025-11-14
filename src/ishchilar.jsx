@@ -1,44 +1,128 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+const API_URL = "https://298b1070ddfa6308.mokky.dev/Ishchilar";
 
 export default function Ishchilar() {
-  const [employees, setEmployees] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+  const [ishchilar, setIshchilar] = useState([]);
+  const [formVisible, setFormVisible] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ ism: "", familya: "", yosh: "" });
+  const [formData, setFormData] = useState({
+    ism: "",
+    familya: "",
+    yosh: "",
+    kategoriya: "",
+  });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editingId) {
-      setEmployees(
-        employees.map((emp) =>
-          emp.id === editingId ? { ...emp, ...formData } : emp
-        )
-      );
-      setEditingId(null);
-    } else {
-      const newEmployee = { id: Date.now(), ...formData };
-      setEmployees([...employees, newEmployee]);
+  // 🔹 Ishchilarni olish
+  const fetchIshchilar = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      setIshchilar(data);
+    } catch (err) {
+      console.error("Xatolik:", err);
     }
-    setFormData({ ism: "", familya: "", yosh: "" });
-    setShowForm(false);
   };
 
-  const handleDelete = (id) => {
-    setEmployees(employees.filter((emp) => emp.id !== id));
+  useEffect(() => {
+    fetchIshchilar();
+  }, []);
+
+  // 🔹 Inputlarni boshqarish
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  // 🔹 Qo‘shish yoki yangilash
+  const saveIshchi = async () => {
+    if (!formData.ism || !formData.familya || !formData.yosh || !formData.kategoriya) {
+      alert("Barcha maydonlarni to‘ldiring!");
+      return;
+    }
+
+    try {
+      if (editingId) {
+        // ✏️ Tahrirlash
+        await fetch(`${API_URL}/${editingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        // ➕ Admin yangi ishchi qo‘shmoqda
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...formData, status: "approved" }),
+        });
+      }
+      setFormVisible(false);
+      setEditingId(null);
+      setFormData({ ism: "", familya: "", yosh: "", kategoriya: "" });
+      fetchIshchilar();
+    } catch (err) {
+      console.error("Saqlashda xato:", err);
+    }
   };
 
-  const handleEdit = (emp) => {
-    setFormData({ ism: emp.ism, familya: emp.familya, yosh: emp.yosh });
-    setEditingId(emp.id);
-    setShowForm(true);
+  // ❌ O‘chirish
+  const deleteIshchi = async (id) => {
+    if (!window.confirm("Rostdan ham o‘chirmoqchimisiz?")) return;
+    try {
+      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      setIshchilar(ishchilar.filter((x) => x.id !== id));
+    } catch (err) {
+      console.error("O‘chirishda xato:", err);
+    }
+  };
+
+  // ✏️ Tahrirlash
+  const editIshchi = (ishchi) => {
+    setEditingId(ishchi.id);
+    setFormData({
+      ism: ishchi.ism,
+      familya: ishchi.familya,
+      yosh: ishchi.yosh,
+      kategoriya: ishchi.kategoriya || "",
+    });
+    setFormVisible(true);
+  };
+
+  // ✅ Qabul qilish
+  const approveIshchi = async (id) => {
+    await fetch(`${API_URL}/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "approved" }),
+    });
+    fetchIshchilar();
+  };
+
+  // 🚫 Rad etish
+  const rejectIshchi = async (id) => {
+    await fetch(`${API_URL}/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "rejected" }),
+    });
+    fetchIshchilar();
+  };
+
+  // 🔹 Formni ochish/yopish
+  const toggleForm = () => {
+    setFormVisible(!formVisible);
+    setEditingId(null);
+    setFormData({ ism: "", familya: "", yosh: "", kategoriya: "" });
   };
 
   return (
-    <div style={{ padding: "30px", background: "#fdf6f0", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+    <div
+      style={{
+        padding: "40px",
+        background: "linear-gradient(180deg, #fff, #fff5e6)",
+        minHeight: "100vh",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
       <a
         href="/asosiypanel"
         style={{
@@ -55,40 +139,34 @@ export default function Ishchilar() {
         Menu
       </a>
 
-      <h1 style={{ color: "#ff8c00", marginBottom: "20px", textAlign: "center" }}>👥 Ishchilar bo‘limi</h1>
+      <h1 style={{ color: "#ff8c00", marginBottom: "20px" }}>👷 Ishchilar boshqaruvi</h1>
 
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <button
-          onClick={() => {
-            setShowForm(!showForm);
-            setEditingId(null);
-            setFormData({ ism: "", familya: "", yosh: "" });
-          }}
-          style={{
-            padding: "10px 20px",
-            cursor: "pointer",
-            borderRadius: "6px",
-            backgroundColor: "#ff8c00",
-            color: "white",
-            border: "none",
-            fontWeight: "bold",
-          }}
-        >
-          {showForm ? "✖ Bekor qilish" : "➕ Ishchi qo‘shish"}
-        </button>
-      </div>
+      {/* 🔹 Admin yangi ishchi qo‘shishi uchun */}
+      <button
+        onClick={toggleForm}
+        style={{
+          padding: "10px 25px",
+          backgroundColor: formVisible ? "#6c757d" : "#ff8c00",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          fontWeight: "600",
+          marginBottom: "25px",
+        }}
+      >
+        {formVisible ? "❌ Yopish" : "➕ Add"}
+      </button>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
+      {formVisible && (
+        <div
           style={{
-            marginBottom: "30px",
+            background: "#fff",
             padding: "20px",
-            backgroundColor: "white",
             borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
             maxWidth: "400px",
-            margin: "0 auto",
+            marginBottom: "30px",
           }}
         >
           <input
@@ -97,8 +175,7 @@ export default function Ishchilar() {
             placeholder="Ism"
             value={formData.ism}
             onChange={handleChange}
-            required
-            style={{ padding: "8px", width: "100%", marginBottom: "10px", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={inputStyle}
           />
           <input
             type="text"
@@ -106,8 +183,7 @@ export default function Ishchilar() {
             placeholder="Familya"
             value={formData.familya}
             onChange={handleChange}
-            required
-            style={{ padding: "8px", width: "100%", marginBottom: "10px", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={inputStyle}
           />
           <input
             type="number"
@@ -115,11 +191,22 @@ export default function Ishchilar() {
             placeholder="Yosh"
             value={formData.yosh}
             onChange={handleChange}
-            required
-            style={{ padding: "8px", width: "100%", marginBottom: "15px", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={inputStyle}
           />
+          <select
+            name="kategoriya"
+            value={formData.kategoriya}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option value="">Kategoriya tanlang</option>
+            <option value="Sotuvchi">Sotuvchi</option>
+            <option value="Yetkazib beruvchi">Yetkazib beruvchi</option>
+            <option value="Omborchi">Omborchi</option>
+          </select>
+
           <button
-            type="submit"
+            onClick={saveIshchi}
             style={{
               width: "100%",
               padding: "10px",
@@ -127,85 +214,117 @@ export default function Ishchilar() {
               color: "white",
               border: "none",
               borderRadius: "8px",
-              fontWeight: "bold",
               cursor: "pointer",
+              fontWeight: "600",
             }}
           >
-            {editingId ? "✏️ Tahrirlash" : "✅ Qo‘shish"}
+            {editingId ? "💾 Yangilash" : "✅ Saqlash"}
           </button>
-        </form>
-      )}
-
-      {employees.length === 0 ? (
-        <p style={{ textAlign: "center", color: "#777" }}>Hozircha ishchi yo‘q</p>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "20px",
-          }}
-        >
-          {employees.map((emp) => (
-            <div
-              key={emp.id}
-              style={{
-                backgroundColor: "white",
-                borderRadius: "12px",
-                padding: "15px",
-                textAlign: "center",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.05)";
-                e.currentTarget.style.boxShadow = "0 6px 14px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-              }}
-            >
-              <h3 style={{ margin: "5px 0", fontSize: "1rem", fontWeight: "600" }}>
-                {emp.ism} {emp.familya}
-              </h3>
-              <p style={{ margin: "5px 0", color: "#777" }}>Yosh: {emp.yosh}</p>
-
-              <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
-                <button
-                  onClick={() => handleEdit(emp)}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    border: "none",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  ✏️ Tahrirlash
-                </button>
-
-                <button
-                  onClick={() => handleDelete(emp.id)}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    border: "none",
-                    backgroundColor: "#dc3545",
-                    color: "white",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  🗑 O‘chirish
-                </button>
-              </div>
-            </div>
-          ))}
         </div>
       )}
+
+      {/* 🔹 Ishchilar ro‘yxati */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "15px",
+        }}
+      >
+        {ishchilar.length === 0 ? (
+          <p>Hozircha ishchilar yo‘q.</p>
+        ) : (
+          ishchilar.map((ishchi) => (
+            <div
+              key={ishchi.id}
+              style={{
+                background: "white",
+                borderRadius: "10px",
+                boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
+                padding: "15px",
+                textAlign: "center",
+              }}
+            >
+              <h3>{ishchi.ism} {ishchi.familya}</h3>
+              <p>🧒 {ishchi.yosh} yosh</p>
+              <p>📋 Ishi: {ishchi.kategoriya}</p>
+              <p>
+                Holat:{" "}
+                <span
+                  style={{
+                    color:
+                      ishchi.status === "approved"
+                        ? "green"
+                        : ishchi.status === "rejected"
+                        ? "red"
+                        : "orange",
+                  }}
+                >
+                  {ishchi.status === "approved"
+                    ? "Qabul qilingan"
+                    : ishchi.status === "rejected"
+                    ? "Rad etilgan"
+                    : "Kutilmoqda"}
+                </span>
+              </p>
+
+              {/* 🔹 Tugmalar holatga qarab */}
+              <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+                {ishchi.status === "approved" ? (
+                  <>
+                    <button
+                      onClick={() => editIshchi(ishchi)}
+                      style={buttonStyle("#007bff")}
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={() => deleteIshchi(ishchi.id)}
+                      style={buttonStyle("#e74c3c")}
+                    >
+                      🗑 Delete
+                    </button>
+                  </>
+                ) : ishchi.status === "pending" ? (
+                  <>
+                    <button
+                      onClick={() => approveIshchi(ishchi.id)}
+                      style={buttonStyle("#28a745")}
+                    >
+                      ✅ Qabul qilish
+                    </button>
+                    <button
+                      onClick={() => rejectIshchi(ishchi.id)}
+                      style={buttonStyle("#e74c3c")}
+                    >
+                      ❌ Rad etish
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
+
+// 🔹 Yordamchi stillar
+const inputStyle = {
+  width: "100%",
+  padding: "10px",
+  marginBottom: "10px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+};
+
+const buttonStyle = (bg) => ({
+  backgroundColor: bg,
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  padding: "6px 10px",
+  cursor: "pointer",
+  fontWeight: "bold",
+});

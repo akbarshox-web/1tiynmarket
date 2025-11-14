@@ -1,10 +1,44 @@
 import React, { useState } from "react";
 
+const API_URL = "https://298b1070ddfa6308.mokky.dev/Ishchilar";
+
 export default function IshchiUchun() {
-  const [formData, setFormData] = useState({ ism: "", familya: "", yosh: "" });
+  const [formData, setFormData] = useState({
+    ism: "",
+    familya: "",
+    yosh: "",
+    kategoriya: "",
+    status: "pending", // 🔹 admin hali qabul qilmagan
+  });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.ism || !formData.familya || !formData.yosh || !formData.kategoriya) {
+      alert("Barcha maydonlarni to‘ldiring!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error("Server bilan bog‘lanib bo‘lmadi!");
+      alert("✅ Arizangiz yuborildi! Admin tasdiqlashini kuting.");
+      setFormData({ ism: "", familya: "", yosh: "", kategoriya: "", status: "pending" });
+    } catch (err) {
+      alert("❌ Ariza yuborishda xatolik yuz berdi!");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -14,10 +48,11 @@ export default function IshchiUchun() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#ff8c00", 
+        backgroundColor: "#ff8c00",
       }}
     >
-      <div
+      <form
+        onSubmit={handleSubmit}
         style={{
           backgroundColor: "white",
           padding: "30px",
@@ -27,7 +62,7 @@ export default function IshchiUchun() {
           textAlign: "center",
         }}
       >
-        <h2 style={{ marginBottom: "20px" }}>Ish Uchun</h2>
+        <h2 style={{ marginBottom: "20px", color: "#ff8c00" }}>🧑‍💼 Ish uchun ariza</h2>
 
         <div style={{ marginBottom: "10px", textAlign: "left" }}>
           <label>Ism:</label>
@@ -51,7 +86,7 @@ export default function IshchiUchun() {
           />
         </div>
 
-        <div style={{ marginBottom: "20px", textAlign: "left" }}>
+        <div style={{ marginBottom: "10px", textAlign: "left" }}>
           <label>Yosh:</label>
           <input
             type="number"
@@ -62,38 +97,46 @@ export default function IshchiUchun() {
           />
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <a
-            href="/registratsiya"
+        <div style={{ marginBottom: "20px", textAlign: "left" }}>
+          <label>Kategoriya:</label>
+          <select
+            name="kategoriya"
+            value={formData.kategoriya}
+            onChange={handleChange}
             style={{
-              padding: "10px 15px",
-              backgroundColor: "#28a745",
-              color: "white",
+              width: "100%",
+              padding: "8px",
+              marginTop: "5px",
               borderRadius: "6px",
-              textDecoration: "none",
-              fontWeight: "bold",
-              cursor: "pointer",
+              border: "1px solid #ccc",
             }}
           >
-            Tasdiqlash
-          </a>
-
-          <a
-            href="/registratsiya"
-            style={{
-              padding: "10px 15px",
-              backgroundColor: "#dc3545",
-              color: "white",
-              borderRadius: "6px",
-              textDecoration: "none",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            Bekor qilish
-          </a>
+            <option value="">Tanlang...</option>
+            <option value="Sotuvchi">Sotuvchi</option>
+            <option value="Yetkazib beruvchi">Yetkazib beruvchi</option>
+            <option value="Omborchi">Omborchi</option>
+            <option value="Boshqa">Boshqa</option>
+          </select>
         </div>
-      </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: "10px 15px",
+            backgroundColor: "#28a745",
+            color: "white",
+            borderRadius: "6px",
+            textDecoration: "none",
+            fontWeight: "bold",
+            cursor: "pointer",
+            border: "none",
+          }}
+        >
+          {loading ? "Yuborilmoqda..." : "Tasdiqlash"}
+        </button>
+      </form>
     </div>
   );
 }

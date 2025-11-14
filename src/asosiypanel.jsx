@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function AsosiyPanel() {
   const buttonStyle = {
@@ -51,28 +52,33 @@ export default function AsosiyPanel() {
         >
           1Tiyn Admin
         </h2>
-        <img style={{
+        <img
+          style={{
             width: "500px",
             margin: "none",
             fontWeight: "400",
-        }} src="https://cbu.uz/upload/iblock/b96/1tiyin_1994_1.png" alt="" />
+          }}
+          src="https://cbu.uz/upload/iblock/b96/1tiyin_1994_1.png"
+          alt=""
+        />
 
-        <a href="/ishchilar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
+        <Link to="/ishchilar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
           👥 Ishchilar
-        </a>
+        </Link>
 
-        <a href="/kameralar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
+        <Link to="/kameralar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
           📷 Kameralar
-        </a>
+        </Link>
 
-        <a href="/mahsulotlar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
+        <Link to="/mahsulotlar" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
           🛒 Mahsulotlar
-        </a>
+        </Link>
 
-        <a href="/" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
+        <Link to="/" style={buttonStyle} onMouseEnter={hover} onMouseLeave={leave}>
           🏪 Market
-        </a>
+        </Link>
       </div>
+
       <div
         style={{
           flex: 1,
@@ -85,7 +91,7 @@ export default function AsosiyPanel() {
         }}
       >
         <h1 style={{ color: "#ff8c00", fontSize: "2.5rem", marginBottom: "10px" }}>
-          Xush kelibsiz, Temur! 👋
+          Xush kelibsiz, Admin! 👋
         </h1>
         <p style={{ fontSize: "1.2rem", color: "#555" }}>
           Bu yerda siz marketni boshqarishingiz mumkin.
